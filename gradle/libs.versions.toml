@@ -1,0 +1,24 @@
+[versions]
+easypermissions = "1.0.0"
+hamcrest = "2.2"
+minSdk = "26"
+prdownloader = "0.6.0"
+targetSdk = "33"
+compileSdk = "33"
+
+commons-io = "2.6"
+navigation = "2.6.0"
+userMessagingPlatform = "2.1.0"
+webkit = "1.7.0"
+
+[libraries]
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
+commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+easypermissions = { module = "pub.devrel:easypermissions", version.ref = "easypermissions" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+prdownloader = { module = "com.mindorks.android:prdownloader", version.ref = "prdownloader" }
+
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.1.2" }
+[plugins]

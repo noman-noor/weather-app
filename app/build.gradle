@@ -1,0 +1,283 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.devtools.ksp'
+
+
+repositories {
+    mavenCentral()
+}
+
+android {
+
+    namespace = "com.supertal.weatherapp"
+    defaultConfig {
+        compileSdk libs.versions.compileSdk.get().toInteger()
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+        compose = true
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/core_release.kotlin_module'
+        // for JNA and JNA-platform
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+        // for byte-buddy
+        exclude "META-INF/licenses/ASM"
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    aaptOptions { cruncherEnabled = false }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion rootProject.composeCompilerVersion
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        //execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+
+}
+configurations {
+    devDebugApi
+    devReleaseApi
+
+    prodDebugApi
+    prodReleaseApi
+}
+
+dependencies {
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    //Modules
+    api project(':core')
+    implementation project(':localDataSource')
+    implementation project(':service')
+    implementation project(':remoteDataSource')
+    implementation libs.androidx.material3
+
+
+    //Utils
+
+
+
+
+
+
+    //StringUtils
+    implementation 'org.apache.commons:commons-lang3:3.6'
+
+
+
+
+
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+
+
+    //Picasso
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
+
+    //UI
+
+    implementation "androidx.legacy:legacy-support-v4:$androidxLegacyVersion"
+    implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
+
+    //Constraint Layout
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+    //Preference
+    implementation "androidx.preference:preference-ktx:$preferenceVersion"
+
+    //Recyclerview
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+
+    //CircleImageView
+    implementation "de.hdodenhof:circleimageview:$circleImageViewVersion"
+
+
+
+    //FillProgressLayout
+    implementation "com.github.JDevZone:FillProgressLayout:$fillProgressLayoutVersion"
+
+
+    //Material Design
+    implementation "com.google.android.material:material:$materialDesignVersion"
+
+
+
+
+
+    //MaterialRangeBar
+    implementation "com.appyvet:materialrangebar:$materialRangeBarVersion"
+
+    //RecyclerView Animators
+    implementation "jp.wasabeef:recyclerview-animators:$recyclerViewAnimatorsVersion"
+
+    //Material Dialogs
+    implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
+
+    //PageIndicatorView
+    implementation "com.romandanylyk:pageindicatorview:$pageIndicatorViewVersion"
+
+    //Lottie
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+
+
+    //compose
+
+    def composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation('androidx.compose.ui:ui')
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    // Foundation (Border, Background, Box, Image, Scroll,  , animations, etc.)
+    implementation('androidx.compose.foundation:foundation')
+    // Material Design
+    implementation('androidx.compose.material:material')
+    // Material design icons
+    implementation('androidx.compose.material:material-icons-core')
+    implementation('androidx.compose.material:material-icons-extended')
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion"
+    // Integration with observable
+    implementation('androidx.compose.runtime:runtime-livedata')
+    // ViewModel utilities for Compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion"
+    //Integration with activities
+    implementation "androidx.activity:activity-compose:$composeActivityVersion"
+    //SDP Jetpack Compose
+    implementation "com.github.Kaaveh:sdp-compose:$sdpCompose"
+    //Coil
+    implementation "io.coil-kt:coil-compose:$coilCompose"
+//    //Jetpack Compose Country Code Picker
+
+    //sdp (scalable dp)
+    implementation "com.intuit.sdp:sdp-android:$sdpVersion"
+    //ssp (scalable sp)
+    implementation "com.intuit.ssp:ssp-android:$sdpVersion"
+
+    //Navigation
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+
+    //Country Code Picker Library
+    implementation "com.hbb20:ccp:$countryCodePickerVersion"
+
+    //Testing
+    // UI Tests
+
+    //Espresso
+    implementation ("androidx.test.espresso:espresso-contrib:$espressoVersion"){
+        exclude group: "com.google.protobuf"
+    }
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
+    androidTestImplementation('androidx.compose.ui:ui-test-junit4')
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    //Koin KSP
+    ksp "io.insert-koin:koin-ksp-compiler:$koinKspVersion"
+
+
+    // Koin for Unit tests
+    testImplementation "io.insert-koin:koin-test:$koinVersion"
+    androidTestImplementation("io.insert-koin:koin-test:$koinVersion") {
+        exclude group: 'org.mockito'
+    }
+
+
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
+    testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    androidTestImplementation "androidx.test:rules:$androidXTestRulesVersion"
+    androidTestImplementation "androidx.test:runner:$androidXTestRunnerVersion"
+    androidTestUtil "androidx.test:orchestrator:$androidXTestOrchestratorVersion"
+    // Architecture Components core testing library
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    //Fragment Testing
+    debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"
+
+    //Robolectric
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    //Coroutines Test
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    //Junit
+    testImplementation "junit:junit:$junitVersion"
+
+    //core ktx
+    implementation 'com.google.android.play:core-ktx:1.8.1'
+
+    implementation "com.google.accompanist:accompanist-pager:0.24.6-alpha"
+
+    //SplashScreen
+    implementation "androidx.core:core-splashscreen:$splashScreenCompatVersion"
+
+
+
+}

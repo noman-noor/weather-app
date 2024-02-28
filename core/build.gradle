@@ -1,0 +1,113 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+
+
+android {
+
+    namespace = "com.core.supertal.weatherapp"
+    defaultConfig {
+        compileSdk libs.versions.compileSdk.get().toInteger()
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        dataBinding true
+    }
+
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api "androidx.core:core-ktx:$androidxCoreVersion"
+
+
+
+    //Koin
+    api "io.insert-koin:koin-android:$koinVersion"
+    api "io.insert-koin:koin-annotations:$koinKspVersion"
+
+
+
+    //Coroutines
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion"
+
+
+
+
+    //Retrofit
+    api "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    api "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    api "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    //OkHttp
+    api "com.squareup.okhttp3:okhttp-bom:$okHttpVersion"
+    api "com.squareup.okhttp3:okhttp"
+    api "com.squareup.okhttp3:logging-interceptor"
+
+    //Moshi
+    api "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+
+
+
+    //Database
+
+
+    // Room
+    api "androidx.room:room-runtime:$roomVersion"
+
+
+
+    kapt "androidx.room:room-compiler:$roomVersion"
+    api "androidx.room:room-ktx:$roomVersion"
+
+    //Google HTTP Client
+    implementation "com.google.http-client:google-http-client-gson:$googleHttpClientVersion"
+    implementation("com.google.api-client:google-api-client-android:$googleHttpClientVersion") {
+      
+    }
+
+
+
+    api libs.commons.io
+
+
+    //Gson
+    api "com.google.code.gson:gson:$gsonVersion"
+
+    //Timber
+    api "com.jakewharton.timber:timber:$timberVersion"
+
+    //Testing
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
+
+
+}
+repositories {
+    mavenCentral()
+}
