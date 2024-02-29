@@ -10,6 +10,7 @@
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mainlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -37,46 +38,51 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
 
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentWeatherData.welcomeMessage}"
                         android:textSize="@dimen/_16ssp"
                         tools:text="Good Morning" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="32&#xb0;C"
+                        android:text="@{viewModel.currentWeatherData.formattedTemp}"
                         android:textSize="@dimen/_32ssp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="32&#xb0;C" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Feels like 32&#xb0;C"
+                        android:text="@{@string/feels_like(viewModel.currentWeatherData.formattedTempFeelsLike)}"
 
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="Feels like 32&#xb0;C" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_8ssp"
+                        android:text="@{viewModel.currentWeatherData.time}"
                         tools:text="29 February, 10:11 am" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentWeatherData.location}"
                         tools:text="Karachi, Pakistan" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -84,27 +90,32 @@
                         android:layout_height="wrap_content">
 
 
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/_6ssp"
-                        android:textStyle="bold"
-                        android:text="&#xb0;C"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="|"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/_6ssp"
-                            android:text="&#xb0;F"/>
+                            android:text="&#xb0;C"
+                            android:onClick="@{()->viewModel.changeUnit(`c`)}"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="|" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_6ssp"
+                            android:onClick="@{()->viewModel.changeUnit(`f`)}"
+                            android:text="&#xb0;F" />
                     </LinearLayout>
+
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="@dimen/_54sdp"
+                        android:layout_height="@dimen/_44sdp"
+                        android:layout_gravity="center"
+                        app:set_image="@{viewModel.currentWeatherData.weatherImageUrl}" />
                 </LinearLayout>
 
 
