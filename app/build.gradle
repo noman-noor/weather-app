@@ -281,7 +281,6 @@ dependencies {
 
     implementation libs.play.services.location
 
-    implementation "com.google.accompanist:accompanist-permissions:0.35.0-alpha"
 
 
 

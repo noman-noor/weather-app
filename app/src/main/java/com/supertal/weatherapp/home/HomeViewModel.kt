@@ -20,23 +20,26 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     val autoComplete: StateFlow<AutoComplete> = _autoComplete
 
     private val _uiEvent = Channel<UiEvents>(Channel.CONFLATED)
-    private val uiEvents = _uiEvent.receiveAsFlow()
+     val uiEvents = _uiEvent.receiveAsFlow()
 
-    fun loadCurrentWeather() {
+    fun loadCurrentWeather(query:String) {
         viewModelScope.launch {
-            weatherService.provideCurrentWeatherUpdate(WeatherParams("karachi"))
-                .collect { resonse ->
-                    when (resonse) {
-                        is Result.Error -> {
-                            resonse.exception.printStackTrace()
-                        }
 
+            weatherService.provideCurrentWeatherUpdate(WeatherParams(query))
+                .collect { response ->
+                    when (response) {
+                        is Result.Error -> {
+                            _uiEvent.trySend(Error(response.exception))
+                            response.exception.printStackTrace()
+                        }
                         Result.Loading -> {
+                            _uiEvent.trySend(LoadingWeatherData)
                             Timber.tag("Loading").e("data is loading")
                         }
 
                         is Result.Success -> {
-                            Timber.tag("data").e(resonse.data.location.country)
+                            _uiEvent.trySend(ShowWeatherData(response.data))
+                            Timber.tag("data").e(response.data.location.country)
                         }
                     }
 
