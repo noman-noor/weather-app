@@ -44,7 +44,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     private val _loadingAutoComplete: MutableLiveData<Boolean> = MutableLiveData(false)
     val loadingAutoComplete: LiveData<Boolean> = _loadingAutoComplete
 
-    private val _loadingWeatherData: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _loadingWeatherData: MutableLiveData<Boolean> = MutableLiveData(true)
     val loadingWeatherData: LiveData<Boolean> = _loadingWeatherData
 
 
@@ -55,11 +55,13 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
             weatherService.provideCurrentWeatherUpdate(WeatherParams(query)).collect { response ->
                 when (response) {
                     is Result.Error -> {
+                        _loadingWeatherData.value = false
                         _uiEvent.postValue(Error(response.exception))
                         response.exception.printStackTrace()
                     }
 
                     Result.Loading -> {
+                        _loadingWeatherData.value = true
                         _uiEvent.postValue(LoadingWeatherData)
                         Timber.tag("Loading").e("data is loading")
                     }
