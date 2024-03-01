@@ -9,7 +9,9 @@ data class CurrentWeatherUiData(
     private val feelsLikeTempF: Double,
     val weatherImageUrl: String,
     val welcomeMessage: String,
-    var unit: String = "c"
+    var unit: String = "c",
+    val windSpeed: String,
+    val cloudCover: String
 ) {
 
     val formattedTemp: String

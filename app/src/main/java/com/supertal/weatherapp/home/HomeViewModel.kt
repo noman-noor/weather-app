@@ -10,24 +10,40 @@ import com.supertal.core.dataModels.CurrentWeather
 import com.supertal.core.dataModels.CurrentWeatherUiData
 import com.supertal.core.dataModels.WeatherParams
 import com.supertal.core.iService.IWeatherService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
-    private val _autoComplete = MutableStateFlow(AutoComplete())
-    val autoComplete: StateFlow<AutoComplete> = _autoComplete
+    var job: Job? = null
+
+
+    val queryString: MutableLiveData<String> = MutableLiveData("")
 
     private val _currentWeatherData = MutableLiveData<CurrentWeatherUiData>()
     val currentWeatherData: LiveData<CurrentWeatherUiData> = _currentWeatherData
 
+    private val _autoCompleteResults = MutableLiveData<AutoComplete?>()
+    val autoCompleteResults: LiveData<AutoComplete?> = _autoCompleteResults
+
     private val _uiEvent = MutableLiveData<UiEvents>()
     val uiEvents = _uiEvent
+
+    private val _autoCompleteListVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
+    val autoCompleteListVisibility: LiveData<Boolean> = _autoCompleteListVisibility
+
+    private val _weatherViewVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
+    val weatherViewVisibility: LiveData<Boolean> = _weatherViewVisibility
+
+
+    private val _loadingAutoComplete: MutableLiveData<Boolean> = MutableLiveData(false)
+    val loadingAutoComplete: LiveData<Boolean> = _loadingAutoComplete
+
 
     fun loadCurrentWeather(query: String) {
         viewModelScope.launch {
@@ -55,10 +71,17 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
     }
 
+    fun onFocusChange(hasFocus: Boolean) {
+        _autoCompleteListVisibility.value = hasFocus
+        _weatherViewVisibility.value = !hasFocus
+    }
+
     private fun transformUiModel(data: CurrentWeather) {
         val dateFormat = SimpleDateFormat("dd MMMM, hh:mm a", Locale.ENGLISH)
+        dateFormat.timeZone = TimeZone.getTimeZone(data.location.tzId)
         val date = Date()
-        date.time = data.location.localtimeEpoch * 1000.toLong()
+        //date.time = data.location.localtimeEpoch * 1000.toLong()
+
         val greeting = when (date.hours) {
             in 6..11 -> "Good Morning"
             in 12..16 -> "Good Day"
@@ -75,12 +98,38 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
             tempF = data.current.tempF,
             feelsLikeTempC = data.current.feelslikeC,
             feelsLikeTempF = data.current.feelslikeF,
+            cloudCover = data.current.cloud.toString() + "%",
+            windSpeed = data.current.windKph.toString()
+
+
         )
         _currentWeatherData.postValue(uiData)
     }
 
-    fun showAutoComplete() {
+    fun getAutCompleteData(query: String) {
+        Timber.tag("Query").e(query)
+        job = viewModelScope.launch {
+            weatherService.autoComplete(query).collect { result ->
+                when (result) {
+                    is Result.Error -> {
+                        _loadingAutoComplete.value = false
+                        result.exception.printStackTrace()
+                    }
 
+                    Result.Loading -> {
+                        _loadingAutoComplete.value = true
+                    }
+
+                    is Result.Success -> {
+                        _loadingAutoComplete.value = false
+                        _autoCompleteResults.value = result.data
+                        Timber.tag("Results").e(result.data.toString())
+
+                    }
+                }
+
+            }
+        }
     }
 
     fun changeUnit(unit: String) {
@@ -91,6 +140,11 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
         }
 
 
+    }
+
+    fun updateVisibility(autoComplete: Boolean, weather: Boolean) {
+        _autoCompleteListVisibility.value = autoComplete
+        _weatherViewVisibility.value = weather
     }
 
 

@@ -2,22 +2,37 @@ package com.supertal.weatherapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LifecycleEventObserver
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.supertal.core.dataModels.AutoCompleteItem
 import com.supertal.weatherapp.databinding.ActivityMainBinding
+import com.supertal.weatherapp.home.AutCompleteAdapter
+import com.supertal.weatherapp.home.AutoCompleteClickListener
 import com.supertal.weatherapp.home.HomeViewModel
 import com.supertal.weatherapp.utils.GpsUtils
+import com.supertal.weatherapp.utils.getQueryTextChangeStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -30,17 +45,79 @@ class MainActivity : ComponentActivity() {
     private lateinit var binding: ActivityMainBinding
     private var wayLatitude = 0.0
     private var wayLongitude = 0.0
+    private val adapter: AutCompleteAdapter =
+        AutCompleteAdapter(object : AutoCompleteClickListener {
+            override fun onClick(data: AutoCompleteItem) {
+                viewModel.loadCurrentWeather(data.name)
+                binding.queryInput.clearFocus()
+                viewModel.updateVisibility(autoComplete = false, weather = true)
+            }
+
+        })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = viewModel
-
         locationInitialization()
-
         binding.lifecycleOwner = this
+        binding.recyclerView.adapter = adapter
+        viewsCallback()
+        observerValues()
 
+    }
 
+    private fun observerValues() {
+        viewModel.autoCompleteResults.observe(this) { data ->
+            if (data != null) adapter.setList(data)
+        }
+    }
 
+    private fun viewsCallback() {
+        binding.queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    val imm =
+                        binding.queryInput.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val hideSoftInputFromWindow =
+                        imm.hideSoftInputFromWindow(binding.queryInput.windowToken, 0)
+                    try {
+                        if (!textView.text.isNullOrBlank()) {
+                            viewModel.getAutCompleteData(textView.text.toString())
+                        }
+
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
+                    return@setOnEditorActionListener true
+                }
+
+                else -> return@setOnEditorActionListener false
+            }
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            binding.queryInput.getQueryTextChangeStateFlow().filter { query ->
+                if (viewModel.queryString.value.isNullOrBlank()) {
+                    viewModel.updateVisibility(autoComplete = false, weather = true)
+                    adapter.setList(emptyList())
+                    binding.queryInput.clearFocus()
+                    return@filter false
+                } else {
+                    viewModel.updateVisibility(autoComplete = true, weather = false)
+                    return@filter true
+                }
+
+            }.debounce(1000).distinctUntilChanged().flatMapLatest { query ->
+                flow {
+                    emit(query)
+                }
+            }.flowOn(Dispatchers.Main).collect { result ->
+                viewModel.job?.cancel()
+                viewModel.getAutCompleteData(viewModel.queryString.value ?: "")
+
+            }
+        }
     }
 
     private fun locationInitialization() {
