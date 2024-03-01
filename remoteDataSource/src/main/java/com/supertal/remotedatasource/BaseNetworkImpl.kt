@@ -1,4 +1,4 @@
-package com.islam360.network
+package com.supertal.remotedatasource
 
 
 import com.google.gson.Gson

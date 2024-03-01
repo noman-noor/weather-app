@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
@@ -18,7 +17,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.supertal.core.dataModels.AutoCompleteItem
+import com.supertal.core.dataModels.ForecastParams
 import com.supertal.weatherapp.databinding.ActivityMainBinding
+import com.supertal.weatherapp.forecast.ForecastAdapter
 import com.supertal.weatherapp.home.AutCompleteAdapter
 import com.supertal.weatherapp.home.AutoCompleteClickListener
 import com.supertal.weatherapp.home.HomeViewModel
@@ -45,11 +46,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var binding: ActivityMainBinding
     private var wayLatitude = 0.0
     private var wayLongitude = 0.0
+    private val forecastAdapter: ForecastAdapter = ForecastAdapter()
     private val adapter: AutCompleteAdapter =
         AutCompleteAdapter(object : AutoCompleteClickListener {
             override fun onClick(data: AutoCompleteItem) {
                 hideKeyboard()
                 viewModel.loadCurrentWeather(data.name)
+                viewModel.getForecastData(ForecastParams(viewModel.lastQuery, 15))
                 binding.queryInput.clearFocus()
                 viewModel.updateVisibility(autoComplete = false, weather = true)
             }
@@ -72,6 +75,10 @@ class MainActivity : ComponentActivity() {
         viewModel.autoCompleteResults.observe(this) { data ->
             if (data != null) adapter.setList(data)
         }
+
+        viewModel.forecastData.observe(this) { data ->
+            if (data != null) forecastAdapter.setList(data)
+        }
     }
 
     private fun hideKeyboard() {
@@ -81,8 +88,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun viewsCallback() {
-
-
+        binding.forecastListView.adapter = forecastAdapter
         binding.swiperefresh.isRefreshing = false
         binding.swiperefresh.setOnRefreshListener {
             viewModel.loadCurrentWeather("karachi")
@@ -111,6 +117,8 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
+
     }
 
     private fun locationInitialization() {
@@ -136,6 +144,7 @@ class MainActivity : ComponentActivity() {
     private fun loadData(location: Location) {
         viewModel.lastQuery = location.latitude.toString() + "," + location.longitude.toString()
         viewModel.loadCurrentWeather(viewModel.lastQuery)
+        viewModel.getForecastData(ForecastParams(viewModel.lastQuery, 15))
     }
 
 

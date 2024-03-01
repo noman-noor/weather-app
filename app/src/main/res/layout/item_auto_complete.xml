@@ -15,7 +15,9 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:gravity="center"
-        android:padding="@dimen/_16sdp">
+
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp">
 
 
         <androidx.appcompat.widget.AppCompatImageView

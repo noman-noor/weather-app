@@ -8,6 +8,9 @@ import com.islam360.core.common.Result
 import com.supertal.core.dataModels.AutoComplete
 import com.supertal.core.dataModels.CurrentWeather
 import com.supertal.core.dataModels.CurrentWeatherUiData
+import com.supertal.core.dataModels.ForecastData
+import com.supertal.core.dataModels.ForecastParams
+import com.supertal.core.dataModels.ForecastUiData
 import com.supertal.core.dataModels.WeatherParams
 import com.supertal.core.iService.IWeatherService
 import kotlinx.coroutines.Job
@@ -46,6 +49,10 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
     private val _loadingWeatherData: MutableLiveData<Boolean> = MutableLiveData(true)
     val loadingWeatherData: LiveData<Boolean> = _loadingWeatherData
+
+
+    private val _forecastData: MutableLiveData<List<ForecastUiData>> = MutableLiveData()
+    val forecastData: LiveData<List<ForecastUiData>> = _forecastData
 
 
     var lastQuery: String = ""
@@ -116,6 +123,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     fun onRefresh() {
         _loadingWeatherData.value = true
         loadCurrentWeather(lastQuery)
+        getForecastData(ForecastParams(lastQuery, 15))
     }
 
     fun getAutCompleteData(query: String) {
@@ -157,6 +165,54 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     fun updateVisibility(autoComplete: Boolean, weather: Boolean) {
         _autoCompleteListVisibility.value = autoComplete
         _weatherViewVisibility.value = weather
+    }
+
+
+    fun getForecastData(params: ForecastParams) {
+        viewModelScope.launch {
+            weatherService.forecastData(params).collect { response ->
+                when (response) {
+                    is Result.Error -> {
+                        response.exception
+
+                    }
+
+                    Result.Loading -> {
+
+                    }
+
+                    is Result.Success -> {
+                        transformForecastData(response.data)
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    private fun dateFormat(date: String): String {
+        val dateFormatInput = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val dateFormatOutput = SimpleDateFormat("EEEE d MMMM", Locale.ENGLISH)
+        return dateFormatOutput.format(dateFormatInput.parse(date) ?: "")
+
+    }
+
+    private fun transformForecastData(data: ForecastData) {
+        val uiData = mutableListOf<ForecastUiData>()
+        data.forecast.forecastDay.forEach {
+            uiData.add(
+                ForecastUiData(
+                    date = dateFormat(it.date),
+                    message = it.day.condition.text,
+                    minTemp = it.day.mintempC.toInt().toString(),
+                    maxTemp = it.day.maxtempC.toInt().toString(),
+                    imageUrl = it.day.condition.icon
+                )
+            )
+        }
+        _forecastData.value = uiData
+
     }
 
 

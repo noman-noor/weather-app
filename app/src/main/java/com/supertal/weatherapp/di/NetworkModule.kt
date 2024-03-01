@@ -1,7 +1,7 @@
 package com.supertal.weatherapp.di
 
-import com.islam360.network.BaseNetworkImpl
-import com.islam360.network.BaseNetworkImpl.Companion.DOMAIN_OPEN_WEATHER
+import com.supertal.remotedatasource.BaseNetworkImpl
+import com.supertal.remotedatasource.BaseNetworkImpl.Companion.DOMAIN_OPEN_WEATHER
 import com.supertal.core.EnvironmentConstant.BASE_URL
 import com.supertal.core.iNetwork.IBaseNetwork
 import com.supertal.core.iNetwork.INetworkApi

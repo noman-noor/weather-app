@@ -3,6 +3,9 @@ package com.supertal.remotedatasource
 import com.islam360.core.common.Result
 import com.supertal.core.dataModels.AutoComplete
 import com.supertal.core.dataModels.CurrentWeather
+import com.supertal.core.dataModels.Forecast
+import com.supertal.core.dataModels.ForecastData
+import com.supertal.core.dataModels.ForecastParams
 import com.supertal.core.dataModels.WeatherParams
 import com.supertal.core.iNetwork.IBaseNetwork
 import com.supertal.core.iNetwork.IWeatherNetwork
@@ -48,6 +51,25 @@ class WeatherNetworkImpl(
                 queryParams,
                 hashMapOf("Content-Type" to "application/json"),
                 AutoComplete::class.java
+            )
+            emit(response)
+        } catch (ex: Exception) {
+            emit(Result.Error(ex))
+        }
+    }
+
+    override fun forecastData(params: ForecastParams): Flow<Result<ForecastData>> = flow {
+        try {
+            emit(Result.Loading)
+            baseNetwork.apiRequestType = IBaseNetwork.RequestType.GET
+            val queryParams = baseNetwork.apiParams
+            queryParams["days"] = params.noOfDays
+            queryParams["q"] = params.query
+            val response = baseNetwork.requestFromServer(
+                "forecast.json",
+                queryParams,
+                hashMapOf("Content-Type" to "application/json"),
+                ForecastData::class.java
             )
             emit(response)
         } catch (ex: Exception) {
