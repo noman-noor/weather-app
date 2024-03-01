@@ -3,7 +3,7 @@
     <string name="feels_like">Feels like %1$s</string>
     <string name="cloud_cover">Clouds %1$s </string>
     <string name="wind_speed">Wind %1$s km/hr</string>
-    <string name="hint_search">type country,city,zip code</string>
+    <string name="hint_search">Country,City,Zip</string>
     <string name="getting_results">Getting Results...</string>
 
 </resources>

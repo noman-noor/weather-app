@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
     private val adapter: AutCompleteAdapter =
         AutCompleteAdapter(object : AutoCompleteClickListener {
             override fun onClick(data: AutoCompleteItem) {
+                hideKeyboard()
                 viewModel.loadCurrentWeather(data.name)
                 binding.queryInput.clearFocus()
                 viewModel.updateVisibility(autoComplete = false, weather = true)
@@ -73,27 +74,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun hideKeyboard() {
+        val imm =
+            binding.queryInput.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val hideSoftInputFromWindow = imm.hideSoftInputFromWindow(binding.queryInput.windowToken, 0)
+    }
+
     private fun viewsCallback() {
-        binding.queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
-            when (actionId) {
-                EditorInfo.IME_ACTION_SEARCH -> {
-                    val imm =
-                        binding.queryInput.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    val hideSoftInputFromWindow =
-                        imm.hideSoftInputFromWindow(binding.queryInput.windowToken, 0)
-                    try {
-                        if (!textView.text.isNullOrBlank()) {
-                            viewModel.getAutCompleteData(textView.text.toString())
-                        }
 
-                    } catch (ex: Exception) {
-                        ex.printStackTrace()
-                    }
-                    return@setOnEditorActionListener true
-                }
 
-                else -> return@setOnEditorActionListener false
-            }
+        binding.swiperefresh.isRefreshing = false
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.loadCurrentWeather("karachi")
+
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -141,7 +134,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadData(location: Location) {
-        viewModel.loadCurrentWeather(location.latitude.toString() + "," + location.longitude.toString())
+        viewModel.lastQuery = location.latitude.toString() + "," + location.longitude.toString()
+        viewModel.loadCurrentWeather(viewModel.lastQuery)
     }
 
 

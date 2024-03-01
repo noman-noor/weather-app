@@ -44,10 +44,14 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     private val _loadingAutoComplete: MutableLiveData<Boolean> = MutableLiveData(false)
     val loadingAutoComplete: LiveData<Boolean> = _loadingAutoComplete
 
+    private val _loadingWeatherData: MutableLiveData<Boolean> = MutableLiveData(false)
+    val loadingWeatherData: LiveData<Boolean> = _loadingWeatherData
+
+
+    var lastQuery: String = ""
 
     fun loadCurrentWeather(query: String) {
         viewModelScope.launch {
-
             weatherService.provideCurrentWeatherUpdate(WeatherParams(query)).collect { response ->
                 when (response) {
                     is Result.Error -> {
@@ -61,6 +65,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
                     }
 
                     is Result.Success -> {
+                        _loadingWeatherData.value = false
                         transformUiModel(response.data)
                         Timber.tag("data").e(response.data.location.country)
                     }
@@ -104,6 +109,11 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
         )
         _currentWeatherData.postValue(uiData)
+    }
+
+    fun onRefresh() {
+        _loadingWeatherData.value = true
+        loadCurrentWeather(lastQuery)
     }
 
     fun getAutCompleteData(query: String) {

@@ -15,8 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
         android:animateLayoutChanges="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
 
@@ -28,20 +28,18 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:hint="@string/hint_search"
-
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/query_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
                 android:onFocusChange="@{(viewItem,hasFocus)->viewModel.onFocusChange(hasFocus)}"
                 android:text="@={viewModel.queryString}" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-
 
 
         <LinearLayout
@@ -49,20 +47,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:visibility="@{viewModel.loadingAutoComplete?View.VISIBLE : View.GONE}"
-            android:gravity="center" >
+            android:gravity="center"
+            android:visibility="@{viewModel.loadingAutoComplete?View.VISIBLE : View.GONE}">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/material_dynamic_neutral40"
-                android:text="@string/getting_results"/>
+                android:text="@string/getting_results"
+                android:textColor="@color/material_dynamic_neutral40" />
 
             <ProgressBar
                 android:layout_width="@dimen/_14sdp"
+                android:layout_height="@dimen/_14sdp"
                 android:layout_marginStart="@dimen/_4sdp"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:layout_height="@dimen/_14sdp"/>
+                android:layout_marginEnd="@dimen/_4sdp" />
 
         </LinearLayout>
 
@@ -74,137 +72,142 @@
             android:layout_marginEnd="@dimen/_8sdp"
             android:visibility="@{viewModel.autoCompleteListVisibility?View.VISIBLE : View.GONE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_auto_complete" />
+            tools:listitem="@layout/item_auto_complete"
+            tools:visibility="gone" />
 
 
-        <androidx.cardview.widget.CardView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:elevation="@dimen/_6sdp"
-            android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
-            app:cardCornerRadius="@dimen/_6sdp">
+            app:onRefreshListener="@{() -> viewModel.onRefresh()}"
+            app:refreshing="@{viewModel.loadingWeatherData}">
 
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/day_gradient"
-                android:padding="@dimen/_6sdp"
-                android:paddingStart="@dimen/_8ssp"
-                android:paddingEnd="@dimen/_8ssp">
+
+                android:elevation="@dimen/_6sdp"
+                android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="@dimen/_6sdp">
+
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentWeatherData.welcomeMessage}"
-                        android:textSize="@dimen/_16ssp"
-                        tools:text="Good Morning" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentWeatherData.formattedTemp}"
-                        android:textSize="@dimen/_32ssp"
-                        android:textStyle="bold"
-                        tools:text="32&#xb0;C" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{@string/feels_like(viewModel.currentWeatherData.formattedTempFeelsLike)}"
-
-                        android:textStyle="bold"
-
-                        tools:text="Feels like 32&#xb0;C" />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_8ssp"
-                        android:text="@{viewModel.currentWeatherData.time}"
-                        tools:text="29 February, 10:11 am" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentWeatherData.location}"
-                        tools:text="Karachi, Pakistan" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:background="@drawable/day_gradient"
+                    android:padding="@dimen/_6sdp"
+                    android:paddingStart="@dimen/_8ssp"
+                    android:paddingEnd="@dimen/_8ssp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="end">
+                        android:layout_weight="1"
+
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.currentWeatherData.welcomeMessage}"
+                            android:textSize="@dimen/_16ssp"
+                            tools:text="Good Morning" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{()->viewModel.changeUnit(`c`)}"
-                            android:padding="@dimen/_6ssp"
-                            android:text="&#xb0;C"
-                            android:textStyle="bold" />
+                            android:text="@{viewModel.currentWeatherData.formattedTemp}"
+                            android:textSize="@dimen/_32ssp"
+                            android:textStyle="bold"
+                            tools:text="32&#xb0;C" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="|" />
+                            android:text="@{@string/feels_like(viewModel.currentWeatherData.formattedTempFeelsLike)}"
+
+                            android:textStyle="bold"
+
+                            tools:text="Feels like 32&#xb0;C" />
+
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{()->viewModel.changeUnit(`f`)}"
-                            android:padding="@dimen/_6ssp"
-                            android:text="&#xb0;F" />
+                            android:layout_marginTop="@dimen/_8ssp"
+                            android:text="@{viewModel.currentWeatherData.time}"
+                            tools:text="29 February, 10:11 am" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.currentWeatherData.location}"
+                            tools:text="Karachi, Pakistan" />
+
                     </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/_54sdp"
-                        android:layout_height="@dimen/_44sdp"
-
-
-                        app:set_image="@{viewModel.currentWeatherData.weatherImageUrl}" />
-
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                        android:text="@{@string/cloud_cover(viewModel.currentWeatherData.cloudCover)}"
-                        tools:text="Cloud 45%" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="@dimen/_64sdp"
+                            android:layout_height="@dimen/_54sdp"
+                            app:set_image="@{viewModel.currentWeatherData.weatherImageUrl}" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
 
-                        android:text="@{@string/wind_speed(viewModel.currentWeatherData.windSpeed)}"
-                        tools:text="Wind 45 km/h" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/cloud_cover(viewModel.currentWeatherData.cloudCover)}"
+                            tools:text="Cloud 45%" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/wind_speed(viewModel.currentWeatherData.windSpeed)}"
+                            tools:text="Wind 45 km/h" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()->viewModel.changeUnit(`c`)}"
+                                android:padding="@dimen/_6ssp"
+                                android:text="&#xb0;C" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="|" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()->viewModel.changeUnit(`f`)}"
+                                android:padding="@dimen/_6ssp"
+                                android:text="&#xb0;F" />
+                        </LinearLayout>
+                    </LinearLayout>
 
 
                 </LinearLayout>
 
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-
-        </androidx.cardview.widget.CardView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </layout>

@@ -19,6 +19,7 @@ class WeatherNetworkImpl(
     override fun provideCurrentWeatherUpdate(params: WeatherParams): Flow<Result<CurrentWeather>> =
         flow {
             try {
+                emit(Result.Loading)
                 baseNetwork.apiRequestType = IBaseNetwork.RequestType.GET
                 val queryParams = baseNetwork.apiParams
                 queryParams["q"] = params.query
