@@ -92,137 +92,145 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
 
-                android:elevation="@dimen/_6sdp"
-                android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
-                app:cardCornerRadius="@dimen/_6sdp">
-
-
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/day_gradient"
-                    android:padding="@dimen/_6sdp"
-                    android:paddingStart="@dimen/_12ssp"
-                    android:paddingEnd="@dimen/_12ssp">
+                    android:elevation="@dimen/_6sdp"
+                    android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
+                    app:cardCornerRadius="@dimen/_6sdp">
+
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.currentWeatherData.welcomeMessage}"
-                            android:textSize="@dimen/_16ssp"
-                            tools:text="Good Morning" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.currentWeatherData.formattedTemp}"
-                            android:textSize="@dimen/_32ssp"
-                            android:textStyle="bold"
-                            tools:text="32&#xb0;C" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{@string/feels_like(viewModel.currentWeatherData.formattedTempFeelsLike)}"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.loadingWeatherData?View.GONE : View.VISIBLE}"
-                            tools:text="Feels like 32&#xb0;C" />
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_8ssp"
-                            android:text="@{viewModel.currentWeatherData.time}"
-                            tools:text="29 February, 10:11 am" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.currentWeatherData.location}"
-                            tools:text="Karachi, Pakistan" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:visibility="@{viewModel.loadingWeatherData?View.GONE : View.VISIBLE}"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="@dimen/_64sdp"
-                            android:layout_height="@dimen/_54sdp"
-                            app:set_image="@{viewModel.currentWeatherData.weatherImageUrl}" />
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{@string/cloud_cover(viewModel.currentWeatherData.cloudCover)}"
-                            tools:text="Cloud 45%" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{@string/wind_speed(viewModel.currentWeatherData.windSpeed)}"
-                            tools:text="Wind 45 km/h" />
-
+                        android:padding="@dimen/_6sdp"
+                        android:paddingStart="@dimen/_12ssp"
+                        android:paddingEnd="@dimen/_12ssp"
+                        app:set_theme_bg="@{viewModel.currentWeatherData.daySession}">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center">
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                android:text="@{viewModel.currentWeatherData.welcomeMessage}"
+                                android:textSize="@dimen/_16ssp"
+                                tools:text="Good Morning" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{()->viewModel.changeUnit(`c`)}"
-                                android:padding="@dimen/_6ssp"
-                                android:text="&#xb0;C" />
+                                android:text="@{viewModel.currentWeatherData.formattedTemp}"
+                                android:textSize="@dimen/_32ssp"
+                                android:textStyle="bold"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                tools:text="32&#xb0;C" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="|" />
+                                android:text="@{@string/feels_like(viewModel.currentWeatherData.formattedTempFeelsLike)}"
+                                android:textStyle="bold"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                android:visibility="@{viewModel.loadingWeatherData?View.GONE : View.VISIBLE}"
+                                tools:text="Feels like 32&#xb0;C" />
+
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{()->viewModel.changeUnit(`f`)}"
-                                android:padding="@dimen/_6ssp"
-                                android:text="&#xb0;F" />
+                                android:layout_marginTop="@dimen/_8ssp"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                android:text="@{viewModel.currentWeatherData.time}"
+                                tools:text="29 February, 10:11 am" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{viewModel.currentWeatherData.location}"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                tools:text="Karachi, Pakistan" />
+
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="@{viewModel.loadingWeatherData?View.GONE : View.VISIBLE}">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/_64sdp"
+                                android:layout_height="@dimen/_54sdp"
+                                app:set_image="@{viewModel.currentWeatherData.weatherImageUrl}" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{@string/cloud_cover(viewModel.currentWeatherData.cloudCover)}"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                tools:text="Cloud 45%" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{@string/wind_speed(viewModel.currentWeatherData.windSpeed)}"
+                                app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                tools:text="Wind 45 km/h" />
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="@{()->viewModel.changeUnit(`c`)}"
+                                    android:padding="@dimen/_6ssp"
+                                    app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                    android:text="&#xb0;C" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="|" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="@{()->viewModel.changeUnit(`f`)}"
+                                    android:padding="@dimen/_6ssp"
+                                    app:set_theme_color= "@{viewModel.currentWeatherData.daySession}"
+                                    android:text="&#xb0;F" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+
                     </LinearLayout>
 
 
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
 
-            </androidx.cardview.widget.CardView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/forecast_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/forecast_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="@dimen/_16sdp"
-                android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_forcast_day"
-                 />
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_forcast_day" />
 
             </LinearLayout>
 

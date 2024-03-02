@@ -11,7 +11,8 @@ data class CurrentWeatherUiData(
     val welcomeMessage: String,
     var unit: String = "c",
     val windSpeed: String,
-    val cloudCover: String
+    val cloudCover: String,
+    val daySession: DaySession = DaySession.MORNING
 ) {
 
     val formattedTemp: String
@@ -62,4 +63,8 @@ data class CurrentWeatherUiData(
         get() {
             return feelsLikeTempF.toInt().toString() + 0x00B0.toChar() + "F"
         }
+}
+
+enum class DaySession(val message: String) {
+    MORNING("Good Morning"), DAY("Good day"), EVENING("Good evening"),NIGHT("Good Night")
 }

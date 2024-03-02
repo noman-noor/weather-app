@@ -8,6 +8,7 @@ import com.supertal.weatherapp.core.Result
 import com.supertal.weatherapp.core.dataModels.AutoComplete
 import com.supertal.weatherapp.core.dataModels.CurrentWeather
 import com.supertal.weatherapp.core.dataModels.CurrentWeatherUiData
+import com.supertal.weatherapp.core.dataModels.DaySession
 import com.supertal.weatherapp.core.dataModels.ForecastData
 import com.supertal.weatherapp.core.dataModels.ForecastParams
 import com.supertal.weatherapp.core.dataModels.ForecastUiData
@@ -17,9 +18,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.TimeZone
 
 class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
@@ -33,7 +35,6 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
     private val _autoCompleteResults = MutableLiveData<AutoComplete?>()
     val autoCompleteResults: LiveData<AutoComplete?> = _autoCompleteResults
-
 
 
     private val _autoCompleteListVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -92,28 +93,31 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     }
 
     private fun transformUiModel(data: CurrentWeather) {
-        val dateFormat = SimpleDateFormat("dd MMMM, hh:mm a", Locale.ENGLISH)
-        dateFormat.timeZone = TimeZone.getTimeZone(data.location.tzId)
-        val date = Date()
-        val greeting = when (date.hours) {
-            in 6..11 -> "Good Morning"
-            in 12..16 -> "Good Day"
-            in 17..20 -> "Good Evening"
-            else -> "Good Evening"
+        val time = LocalDateTime.now(ZoneId.of(data.location.tzId))
+        val displayTime =
+            time.format(DateTimeFormatter.ofPattern("dd MMMM, hh:mm a", Locale.ENGLISH))
+
+        val daySession = when (time.hour) {
+            in 0..6 -> DaySession.NIGHT
+            in 6..11 -> DaySession.MORNING
+            in 12..16 -> DaySession.DAY
+            in 17..24 -> DaySession.EVENING
+            else -> DaySession.MORNING
+
         }
 
         val uiData = CurrentWeatherUiData(
             location = data.location.name + "," + data.location.country,
-            time = dateFormat.format(date),
+            time = displayTime,
             weatherImageUrl = data.current.condition.icon,
-            welcomeMessage = greeting,
+            welcomeMessage = daySession.message,
             tempC = data.current.tempC,
             tempF = data.current.tempF,
             feelsLikeTempC = data.current.feelslikeC,
             feelsLikeTempF = data.current.feelslikeF,
             cloudCover = data.current.cloud.toString() + "%",
-            windSpeed = data.current.windKph.toString()
-
+            windSpeed = data.current.windKph.toString(),
+            daySession = daySession
 
         )
         _currentWeatherData.postValue(uiData)

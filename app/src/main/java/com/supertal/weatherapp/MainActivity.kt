@@ -83,13 +83,14 @@ class MainActivity : ComponentActivity() {
         }
         viewModel.error.observe(this){
 
+            showSnackBar()
 
         }
     }
 
     private fun showSnackBar(){
         val snackbar = Snackbar
-            .make(binding.mainLayout, getString(R.string.error_load_data), Snackbar.LENGTH_INDEFINITE)
+            .make(binding.mainLayout, getString(R.string.error_load_data), Snackbar.LENGTH_LONG)
             .setAction("Try gain") {
                 viewModel.onRefresh()
             }
