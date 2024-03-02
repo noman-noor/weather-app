@@ -1,6 +1,7 @@
 package com.supertal.core.iNetwork
 
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
@@ -15,12 +16,12 @@ interface INetworkApi {
         @Url url: String,
         @QueryMap params: Map<String, @JvmSuppressWildcards Any>?,
         @HeaderMap headers: HashMap<String, String>
-    ): ResponseBody
+    ): Response<ResponseBody>
 
 
     @POST
     suspend fun callPostRequest(
         @Url url: String, @Body params: Map<String, @JvmSuppressWildcards Any>
-    ): ResponseBody
+    ): Response<ResponseBody>
 
 }

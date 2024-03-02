@@ -45,10 +45,7 @@ open class BaseNetworkImpl : IBaseNetwork, KoinComponent {
 
 
     override suspend fun <T> requestFromServer(
-        url: String,
-        params: HashMap<String, Any>,
-        headers: HashMap<String, String>,
-        type: Class<T>
+        url: String, params: HashMap<String, Any>, headers: HashMap<String, String>, type: Class<T>
     ): Result<T> = withContext(Dispatchers.IO) {
         try {
             setProperties(url, params, headers)
@@ -58,17 +55,23 @@ open class BaseNetworkImpl : IBaseNetwork, KoinComponent {
                     apiUrl, apiParams, apiHttpHeaders
                 )
                 else networkApi.callPostRequest(apiUrl, apiParams)
-            val response = Gson().fromJson(httpResponse.string(), type)
-            Result.Success(response)
+            setHttpApiProperties(httpResponse)
+            when (httpResponse.code()) {
+                200 -> {
+                    val response = Gson().fromJson(httpResponse.body()?.string(), type)
+                    Result.Success(response)
+                }
+                else -> {
+                    Result.Error(Exception(httpResponse.message()),
+                        httpResponse.code())
+                }
+            }
+
         } catch (e: Exception) {
             Result.Error(
                 e, if (e is HttpException) e.code() else ERROR_CODE_NONE
             )
         }
-    }
-
-    private fun sendApiEvent(response: Response<ResponseBody>?) {
-
     }
 
     private fun setHttpApiProperties(httpResponse: Response<ResponseBody>?) {

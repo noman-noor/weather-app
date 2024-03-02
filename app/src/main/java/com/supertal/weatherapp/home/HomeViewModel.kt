@@ -34,8 +34,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     private val _autoCompleteResults = MutableLiveData<AutoComplete?>()
     val autoCompleteResults: LiveData<AutoComplete?> = _autoCompleteResults
 
-    private val _uiEvent = MutableLiveData<UiEvents>()
-    val uiEvents = _uiEvent
+
 
     private val _autoCompleteListVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
     val autoCompleteListVisibility: LiveData<Boolean> = _autoCompleteListVisibility
@@ -54,6 +53,9 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     private val _forecastData: MutableLiveData<List<ForecastUiData>> = MutableLiveData()
     val forecastData: LiveData<List<ForecastUiData>> = _forecastData
 
+    private val _error: MutableLiveData<Result.Error> = MutableLiveData()
+    val error: LiveData<Result.Error> = _error
+
 
     var lastQuery: String = ""
 
@@ -63,13 +65,12 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
                 when (response) {
                     is Result.Error -> {
                         _loadingWeatherData.value = false
-                        _uiEvent.postValue(Error(response.exception))
-                        response.exception.printStackTrace()
+                        _error.value = response
+
                     }
 
                     Result.Loading -> {
                         _loadingWeatherData.value = true
-                        _uiEvent.postValue(LoadingWeatherData)
                         Timber.tag("Loading").e("data is loading")
                     }
 
@@ -94,8 +95,6 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
         val dateFormat = SimpleDateFormat("dd MMMM, hh:mm a", Locale.ENGLISH)
         dateFormat.timeZone = TimeZone.getTimeZone(data.location.tzId)
         val date = Date()
-        //date.time = data.location.localtimeEpoch * 1000.toLong()
-
         val greeting = when (date.hours) {
             in 6..11 -> "Good Morning"
             in 12..16 -> "Good Day"
@@ -104,7 +103,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
         }
 
         val uiData = CurrentWeatherUiData(
-            location = data.location.country + "," + data.location.name,
+            location = data.location.name + "," + data.location.country,
             time = dateFormat.format(date),
             weatherImageUrl = data.current.condition.icon,
             welcomeMessage = greeting,
@@ -133,7 +132,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
                 when (result) {
                     is Result.Error -> {
                         _loadingAutoComplete.value = false
-                        result.exception.printStackTrace()
+                        _error.value = result
                     }
 
                     Result.Loading -> {
@@ -143,7 +142,6 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
                     is Result.Success -> {
                         _loadingAutoComplete.value = false
                         _autoCompleteResults.value = result.data
-                        Timber.tag("Results").e(result.data.toString())
 
                     }
                 }
@@ -173,8 +171,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
             weatherService.forecastData(params).collect { response ->
                 when (response) {
                     is Result.Error -> {
-                        response.exception
-
+                        _error.value = response
                     }
 
                     Result.Loading -> {

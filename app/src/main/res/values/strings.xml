@@ -5,5 +5,6 @@
     <string name="wind_speed">Wind %1$s km/hr</string>
     <string name="hint_search">Country,City,Zip</string>
     <string name="getting_results">Getting Results...</string>
+    <string name="error_load_data">an error occurred please try again</string>
 
 </resources>

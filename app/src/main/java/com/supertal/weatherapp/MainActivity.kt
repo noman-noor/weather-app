@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.snackbar.Snackbar
 import com.supertal.core.dataModels.AutoCompleteItem
 import com.supertal.core.dataModels.ForecastParams
 import com.supertal.weatherapp.databinding.ActivityMainBinding
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : ComponentActivity() {
 
     private val viewModel: HomeViewModel by viewModel()
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
             override fun onClick(data: AutoCompleteItem) {
                 hideKeyboard()
                 viewModel.loadCurrentWeather(data.name)
-                viewModel.getForecastData(ForecastParams(viewModel.lastQuery, 15))
+                viewModel.getForecastData(ForecastParams(data.name, 15))
                 binding.queryInput.clearFocus()
                 viewModel.updateVisibility(autoComplete = false, weather = true)
             }
@@ -79,6 +81,20 @@ class MainActivity : ComponentActivity() {
         viewModel.forecastData.observe(this) { data ->
             if (data != null) forecastAdapter.setList(data)
         }
+        viewModel.error.observe(this){
+
+
+        }
+    }
+
+    private fun showSnackBar(){
+        val snackbar = Snackbar
+            .make(binding.mainLayout, getString(R.string.error_load_data), Snackbar.LENGTH_INDEFINITE)
+            .setAction("Try gain") {
+                viewModel.onRefresh()
+            }
+
+        snackbar.show()
     }
 
     private fun hideKeyboard() {
