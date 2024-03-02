@@ -4,7 +4,7 @@ Welcome to the Weather Forecasting Android App! This app provides you with accur
 
 | Current Weather | Search Functionality | 15-Day Forecast |
 | --- | --- | --- |
-| ![Current Weather](screenshots/day.png =250px) | ![Search Functionality](screenshots/search.png =250px) | ![15-Day Forecast](screenshots/night.png =250px) |
+| ![Current Weather](screenshots/day.png) | ![Search Functionality](screenshots/search.png) | ![15-Day Forecast](screenshots/night.png) |
 
 
 
