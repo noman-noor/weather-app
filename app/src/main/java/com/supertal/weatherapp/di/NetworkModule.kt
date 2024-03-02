@@ -1,12 +1,12 @@
 package com.supertal.weatherapp.di
 
-import com.supertal.remotedatasource.BaseNetworkImpl
-import com.supertal.remotedatasource.BaseNetworkImpl.Companion.DOMAIN_OPEN_WEATHER
-import com.supertal.core.EnvironmentConstant.BASE_URL
-import com.supertal.core.iNetwork.IBaseNetwork
-import com.supertal.core.iNetwork.INetworkApi
-import com.supertal.core.iNetwork.IWeatherNetwork
-import com.supertal.remotedatasource.WeatherNetworkImpl
+import com.supertal.weatherapp.remoteDataSource.BaseNetworkImpl
+import com.supertal.weatherapp.remoteDataSource.BaseNetworkImpl.Companion.DOMAIN_OPEN_WEATHER
+import com.supertal.weatherapp.core.EnvironmentConstant.BASE_URL
+import com.supertal.weatherapp.core.iNetwork.IBaseNetwork
+import com.supertal.weatherapp.core.iNetwork.INetworkApi
+import com.supertal.weatherapp.core.iNetwork.IWeatherNetwork
+import com.supertal.weatherapp.remoteDataSource.WeatherNetworkImpl
 import com.supertal.weatherapp.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

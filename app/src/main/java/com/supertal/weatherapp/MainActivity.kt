@@ -17,8 +17,8 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
-import com.supertal.core.dataModels.AutoCompleteItem
-import com.supertal.core.dataModels.ForecastParams
+import com.supertal.weatherapp.core.dataModels.AutoCompleteItem
+import com.supertal.weatherapp.core.dataModels.ForecastParams
 import com.supertal.weatherapp.databinding.ActivityMainBinding
 import com.supertal.weatherapp.forecast.ForecastAdapter
 import com.supertal.weatherapp.home.AutCompleteAdapter

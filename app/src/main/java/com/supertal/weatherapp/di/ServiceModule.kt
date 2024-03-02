@@ -1,7 +1,7 @@
 package com.supertal.weatherapp.di
 
-import com.supertal.core.iService.IWeatherService
-import com.supertal.service.IWeatherServiceImpl
+import com.supertal.weatherapp.core.iService.IWeatherService
+import com.supertal.weatherapp.service.IWeatherServiceImpl
 import org.koin.dsl.module
 
 

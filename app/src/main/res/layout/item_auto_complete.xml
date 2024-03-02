@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.supertal.core.dataModels.AutoCompleteItem" />
+            type="com.supertal.weatherapp.core.dataModels.AutoCompleteItem" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

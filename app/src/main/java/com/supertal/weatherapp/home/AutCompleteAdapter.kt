@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.supertal.core.dataModels.AutoCompleteItem
+import com.supertal.weatherapp.core.dataModels.AutoCompleteItem
 import com.supertal.weatherapp.R
 import com.supertal.weatherapp.databinding.ItemAutoCompleteBinding
 

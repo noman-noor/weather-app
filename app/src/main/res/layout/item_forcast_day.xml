@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.supertal.core.dataModels.ForecastUiData" />
+            type="com.supertal.weatherapp.core.dataModels.ForecastUiData" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

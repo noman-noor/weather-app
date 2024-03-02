@@ -1,9 +1,8 @@
 package com.supertal.weatherapp.utils
 
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.textfield.TextInputEditText
-import com.supertal.core.dataModels.TextChangeModel
+import com.supertal.weatherapp.core.dataModels.TextChangeModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
