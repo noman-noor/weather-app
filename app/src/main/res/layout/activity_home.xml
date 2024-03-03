@@ -221,16 +221,29 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/forecast_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginTop="@dimen/_16sdp"
                     android:visibility="@{viewModel.weatherViewVisibility?View.VISIBLE : View.GONE}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_forcast_day" />
+
+                    <ProgressBar
+                        android:visibility="@{viewModel.loadingForecastData?View.VISIBLE : View.GONE}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+
+                </FrameLayout>
+
 
             </LinearLayout>
 

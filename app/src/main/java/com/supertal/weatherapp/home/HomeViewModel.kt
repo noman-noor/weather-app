@@ -50,6 +50,9 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
     private val _loadingWeatherData: MutableLiveData<Boolean> = MutableLiveData(true)
     val loadingWeatherData: LiveData<Boolean> = _loadingWeatherData
 
+    private val _loadingForecastData: MutableLiveData<Boolean> = MutableLiveData(true)
+    val loadingForecastData: LiveData<Boolean> = _loadingForecastData
+
 
     private val _forecastData: MutableLiveData<List<ForecastUiData>> = MutableLiveData()
     val forecastData: LiveData<List<ForecastUiData>> = _forecastData
@@ -72,13 +75,11 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
                     Result.Loading -> {
                         _loadingWeatherData.value = true
-                        Timber.tag("Loading").e("data is loading")
                     }
 
                     is Result.Success -> {
                         _loadingWeatherData.value = false
                         transformUiModel(response.data)
-                        Timber.tag("data").e(response.data.location.country)
                     }
                 }
 
@@ -175,14 +176,18 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
             weatherService.forecastData(params).collect { response ->
                 when (response) {
                     is Result.Error -> {
+                        _loadingForecastData.value = false
                         _error.value = response
+
                     }
 
                     Result.Loading -> {
+                        _loadingForecastData.value = true
 
                     }
 
                     is Result.Success -> {
+                        _loadingForecastData.value = false
                         transformForecastData(response.data)
                     }
                 }
@@ -219,20 +224,7 @@ class HomeViewModel(private val weatherService: IWeatherService) : ViewModel() {
 
 }
 
-sealed interface UiEvents
-sealed class AutoCompleteEvents : UiEvents
-data class ShowAutoCompleteData(
-    val countryName: String, val cityName: String, val lat: Double, val lon: Double
-) : AutoCompleteEvents()
 
-data class ErrorOnAutoCompete(val exception: Exception) : AutoCompleteEvents()
-data class ClickOnAutoComplete(val showAutoCompleteData: ShowAutoCompleteData) :
-    AutoCompleteEvents()
 
-object LoadingAutoComplete : AutoCompleteEvents()
 
-sealed class ShowWeatherEvents : UiEvents
-object LoadingWeatherData : ShowWeatherEvents()
-object AskingLocationPermission : ShowWeatherEvents()
-data class ShowWeatherData(val data: CurrentWeatherUiData) : ShowWeatherEvents()
-data class Error(val ex: Exception) : ShowWeatherEvents()
+

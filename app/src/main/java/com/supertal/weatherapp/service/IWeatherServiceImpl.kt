@@ -10,13 +10,13 @@ import com.supertal.weatherapp.core.iNetwork.IWeatherNetwork
 import com.supertal.weatherapp.core.iService.IWeatherService
 import kotlinx.coroutines.flow.Flow
 
-class IWeatherServiceImpl(private val weatherNetwork: com.supertal.weatherapp.core.iNetwork.IWeatherNetwork) :
-    com.supertal.weatherapp.core.iService.IWeatherService {
-    override fun provideCurrentWeatherUpdate(params: com.supertal.weatherapp.core.dataModels.WeatherParams): Flow<com.supertal.weatherapp.core.Result<com.supertal.weatherapp.core.dataModels.CurrentWeather>> =
+class IWeatherServiceImpl(private val weatherNetwork: IWeatherNetwork) :
+    IWeatherService {
+    override fun provideCurrentWeatherUpdate(params: WeatherParams): Flow<Result<CurrentWeather>> =
         weatherNetwork.provideCurrentWeatherUpdate(params)
 
-    override fun autoComplete(query: String): Flow<com.supertal.weatherapp.core.Result<com.supertal.weatherapp.core.dataModels.AutoComplete>> =
+    override fun autoComplete(query: String): Flow<Result<AutoComplete>> =
         weatherNetwork.autoComplete(query)
 
-    override fun forecastData(forecastParams: com.supertal.weatherapp.core.dataModels.ForecastParams): Flow<com.supertal.weatherapp.core.Result<com.supertal.weatherapp.core.dataModels.ForecastData>> = weatherNetwork.forecastData(forecastParams)
+    override fun forecastData(forecastParams: ForecastParams): Flow<Result<ForecastData>> = weatherNetwork.forecastData(forecastParams)
 }

@@ -19,7 +19,7 @@ import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
 import com.supertal.weatherapp.core.dataModels.AutoCompleteItem
 import com.supertal.weatherapp.core.dataModels.ForecastParams
-import com.supertal.weatherapp.databinding.ActivityMainBinding
+import com.supertal.weatherapp.databinding.ActivityHomeBinding
 import com.supertal.weatherapp.forecast.ForecastAdapter
 import com.supertal.weatherapp.home.AutCompleteAdapter
 import com.supertal.weatherapp.home.AutoCompleteClickListener
@@ -38,14 +38,14 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MainActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
 
     private val viewModel: HomeViewModel by viewModel()
 
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityHomeBinding
     private var wayLatitude = 0.0
     private var wayLongitude = 0.0
     private val forecastAdapter: ForecastAdapter = ForecastAdapter()
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.viewModel = viewModel
         locationInitialization()
         binding.lifecycleOwner = this

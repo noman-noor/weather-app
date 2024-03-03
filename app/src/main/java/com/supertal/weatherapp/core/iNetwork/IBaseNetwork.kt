@@ -7,7 +7,6 @@ interface IBaseNetwork {
 
 
     var apiUrl: String
-    val apiEndPoint: String
     var apiErrorMessage: String
     val apiSuccessCode: Int
     var apiParams: HashMap<String, Any>
@@ -29,16 +28,6 @@ interface IBaseNetwork {
         headers: HashMap<String, String>,
         type: Class<T>,
     ): Result<T>
-
-    suspend fun <T> request(
-        url: String,
-        params: LinkedHashMap<String, Any>,
-        headers: HashMap<String, String>,
-        type: T,
-        parameterizedType: ParameterizedType
-    ): T
-
-    fun generateUrlFromParams(map: HashMap<String, String>): String
 
 
 }
