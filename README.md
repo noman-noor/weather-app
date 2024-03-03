@@ -1,10 +1,11 @@
 # Weather Forecasting Android App
 
-Welcome to Weather Forecasting Android App! This app provides you with accurate and up-to-date weather information, allowing you to stay informed about the weather conditions in any location. With a user-friendly interface and a range of features, it's your go-to companion for weather updates on the go.
+Welcome to the Weather Forecasting Android App! This app provides you with accurate and up-to-date weather information, allowing you to stay informed about the weather conditions in any location. With a user-friendly interface and a range of features, it's your go-to companion for weather updates on the go.
 
 | Current Weather | Search Functionality | 15-Day Forecast |
 | --- | --- | --- |
 | ![Current Weather](screenshots/day.png) | ![Search Functionality](screenshots/search.png) | ![15-Day Forecast](screenshots/night.png) |
+
 
 
 ## Features
@@ -44,6 +45,6 @@ To get started with the Weather Forecasting Android App, follow these steps:
 
 ## Contact
 
-For any inquiries or support, feel free to contact us at [noman.noor@hotmail.com].
+For any inquiries or support, feel free to contact us at noman.noor@hotmail.com.
 
 Enjoy using the Weather Forecasting Android App!
